@@ -38,7 +38,7 @@ void HUD::RenderHealth()
 
 void HUD::RenderBandWidth()
 {
-	string bandwidth = StringUtils::Sprintf("In %d  Bps, Out %d Bps",
+	string bandwidth = StringUtils::Sprintf("In %d  Bps         Out %d Bps",
 		static_cast<int>(NetworkManagerClient::sInstance->GetBytesReceivedPerSecond().GetValue()),
 		static_cast<int>(NetworkManagerClient::sInstance->GetBytesSentPerSecond().GetValue()));
 	RenderText(bandwidth, mBandwidthOrigin, Colors::White);
@@ -71,9 +71,9 @@ void HUD::RenderText(const string& inStr, const Vector3& origin, const Vector3& 
 	sf::Text text;
 	text.setString(inStr);
 	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
-	text.setCharacterSize(50);
+	text.setCharacterSize(20);
 	text.setPosition(origin.mX, origin.mY);
-	text.setFont(*FontManager::sInstance->GetFont("carlito"));
+	text.setFont(*FontManager::sInstance->GetFont("smw"));
 	WindowManager::sInstance->draw(text);
 }
 

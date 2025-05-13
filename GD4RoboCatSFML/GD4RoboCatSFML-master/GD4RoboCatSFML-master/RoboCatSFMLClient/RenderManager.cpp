@@ -1,5 +1,5 @@
 #include "RoboCatClientPCH.hpp"
-
+//ET
 std::unique_ptr< RenderManager >	RenderManager::sInstance;
 
 RenderManager::RenderManager()
