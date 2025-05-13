@@ -14,6 +14,7 @@ public:
 	void AddComponent(SpriteComponent* inComponent);
 	void RemoveComponent(SpriteComponent* inComponent);
 	int	 GetComponentIndex(SpriteComponent* inComponent) const;
+	void AddPlatform(const std::string& textureName, const sf::Vector2f& position);
 
 private:
 
@@ -26,6 +27,8 @@ private:
 	sf::Sprite mCloud1Sprite;
 	sf::Sprite mCloud2Sprite;
 	sf::Sprite mBackgroundSprite;
+
+	std::vector<sf::Sprite> mPlatformSprites; // platform sprites
 	float mCloud1Offset = 0.f;
 	float mCloud2Offset = 0.f;
 	sf::View view;

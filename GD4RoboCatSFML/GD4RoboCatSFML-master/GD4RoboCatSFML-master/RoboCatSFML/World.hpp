@@ -1,6 +1,7 @@
 /*
 * the world tracks all the live game objects. Failry inefficient for now, but not that much of a problem
 */
+#include <SFML/Graphics.hpp>
 class World
 {
 
@@ -14,17 +15,16 @@ public:
 	void RemoveGameObject(GameObjectPtr inGameObject);
 
 	void Update();
-
+	
 	const std::vector< GameObjectPtr >& GetGameObjects()	const { return mGameObjects; }
 
 private:
-
+	
 	World();
-
+	
 	int	GetIndexOfGameObject(GameObjectPtr inGameObject);
-
+	
 	std::vector< GameObjectPtr >	mGameObjects;
-
 
 };
 

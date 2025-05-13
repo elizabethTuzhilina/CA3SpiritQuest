@@ -41,6 +41,7 @@ RenderManager::RenderManager()
 		mCloud2Sprite.setTexture(*cloud2Tex);
 		mCloud2Sprite.setScale(1.f, 1.f);
 	}
+
 }
 
 
@@ -69,6 +70,19 @@ void RenderManager::RemoveComponent(SpriteComponent* inComponent)
 			mComponents[index] = mComponents[lastIndex];
 		}
 		mComponents.pop_back();
+	}
+}
+//ET
+void RenderManager::AddPlatform(const std::string& textureName, const sf::Vector2f& position)
+{
+	TexturePtr tex = TextureManager::sInstance->GetTexture(textureName);
+	if (tex)
+	{
+		sf::Sprite sprite;
+		sprite.setTexture(*tex);
+		sprite.setPosition(position);
+		sprite.setScale(0.4f, 0.4f); // adjust scale as needed
+		mPlatformSprites.push_back(sprite);
 	}
 }
 
@@ -141,6 +155,12 @@ void RenderManager::Render()
 		mCloud2Sprite.setPosition(x, 400.f);
 		WindowManager::sInstance->draw(mCloud2Sprite);
 	}
+	// Platforms 
+	for (const sf::Sprite& platform : mPlatformSprites)
+	{
+		WindowManager::sInstance->draw(platform);
+	}
+
 	RenderManager::sInstance->RenderComponents();
 
 	HUD::sInstance->Render();

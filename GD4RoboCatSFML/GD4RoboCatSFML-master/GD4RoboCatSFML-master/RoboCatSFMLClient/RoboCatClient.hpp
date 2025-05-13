@@ -10,7 +10,7 @@ public:
 
 	void DoClientSidePredictionAfterReplicationForLocalCat(uint32_t inReadState);
 	void DoClientSidePredictionAfterReplicationForRemoteCat(uint32_t inReadState);
-
+	
 protected:
 	RoboCatClient();
 
