@@ -10,7 +10,10 @@ public:
 
 	void DoClientSidePredictionAfterReplicationForLocalCat(uint32_t inReadState);
 	void DoClientSidePredictionAfterReplicationForRemoteCat(uint32_t inReadState);
-	
+	// Override to check if this RoboCat belongs to the local player
+	virtual bool IsOwnedByLocalPlayer() const override;
+	virtual void SimulateMovement(float inDeltaTime) override;
+
 protected:
 	RoboCatClient();
 

@@ -1,5 +1,5 @@
 #include "RoboCatClientPCH.hpp"
-
+#include "iostream"
 RoboCatClient::RoboCatClient() :
 	mTimeLocationBecameOutOfSync(0.f),
 	mTimeVelocityBecameOutOfSync(0.f)
@@ -18,28 +18,67 @@ void RoboCatClient::HandleDying()
 		HUD::sInstance->SetPlayerHealth(0);
 	}
 }
-
+bool RoboCatClient::IsOwnedByLocalPlayer() const
+{
+	return GetPlayerId() == NetworkManagerClient::sInstance->GetPlayerId();
+}
 
 void RoboCatClient::Update()
 {
-	//is this the cat owned by us?
-	if (GetPlayerId() == NetworkManagerClient::sInstance->GetPlayerId())
+	if (IsOwnedByLocalPlayer())
 	{
 		const Move* pendingMove = InputManager::sInstance->GetAndClearPendingMove();
-		//in theory, only do this if we want to sample input this frame / if there's a new move ( since we have to keep in sync with server )
-		if (pendingMove) //is it time to sample a new move...
+		if (pendingMove)
 		{
 			float deltaTime = pendingMove->GetDeltaTime();
 
-			//apply that input
-
+			// Apply input
 			ProcessInput(deltaTime, pendingMove->GetInputState());
 
-			//and simulate!
+			// Predict movement
+			Vector3 velocity = GetVelocity();
+			Vector3 newPos = GetLocation() + velocity * deltaTime;
+			sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
 
-			SimulateMovement(deltaTime);
 
-			//LOG( "Client Move Time: %3.4f deltaTime: %3.4f left rot at %3.4f", latestMove.GetTimestamp(), deltaTime, GetRotation() );
+			bool collided = false;
+
+			for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
+			{
+				if (catBounds.intersects(platform))
+				{
+					sf::FloatRect overlap;
+					overlap.left = std::max(catBounds.left, platform.left);
+					overlap.top = std::max(catBounds.top, platform.top);
+					overlap.width = std::min(catBounds.left + catBounds.width, platform.left + platform.width) - overlap.left;
+					overlap.height = std::min(catBounds.top + catBounds.height, platform.top + platform.height) - overlap.top;
+
+					// Resolve collision
+					if (overlap.width < overlap.height)
+					{
+						// Horizontal
+						newPos.mX += (catBounds.left < platform.left) ? -overlap.width : overlap.width;
+						velocity.mX = 0.f;
+					}
+					else
+					{
+						// Vertical
+						newPos.mY += (catBounds.top < platform.top) ? -overlap.height : overlap.height;
+						velocity.mY = 0.f;
+					}
+
+					collided = true;
+					break;
+				}
+			}
+
+			SetLocation(newPos);
+			SetVelocity(velocity);
+
+			if (collided)
+			{
+				std::cout << "[COLLISION] RoboCat collided with platform.\n";
+			}
 		}
 	}
 	else
@@ -48,11 +87,46 @@ void RoboCatClient::Update()
 
 		if (RoboMath::Is2DVectorEqual(GetVelocity(), Vector3::Zero))
 		{
-			//we're in sync if our velocity is 0
 			mTimeLocationBecameOutOfSync = 0.f;
 		}
 	}
 }
+
+
+
+void RoboCatClient::SimulateMovement(float inDeltaTime)
+{
+	AdjustVelocityByThrust(inDeltaTime);
+
+	Vector3 proposedLocation = GetLocation() + GetVelocity() * inDeltaTime;
+	sf::FloatRect catBounds(proposedLocation.mX - 16.f, proposedLocation.mY - 16.f, 32.f, 32.f);
+
+	bool blocked = false;
+	for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
+	{
+		if (catBounds.intersects(platform))
+		{
+			blocked = true;
+			std::cout << "[COLLISION] RoboCatClient collided with platform at: "
+				<< platform.left << ", " << platform.top << "\n";
+			break;
+		}
+	}
+
+	if (!blocked)
+	{
+		SetLocation(proposedLocation);
+	}
+	else
+	{
+		SetVelocity(Vector3::Zero);
+	}
+
+	// Still run other GameObject collisions like cats
+	RoboCat::ProcessCollisionsWithScreenWalls();
+}
+
+
 
 void RoboCatClient::Read(InputMemoryBitStream& inInputStream)
 {

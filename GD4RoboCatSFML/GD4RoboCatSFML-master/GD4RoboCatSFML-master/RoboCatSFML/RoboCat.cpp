@@ -48,7 +48,11 @@ void RoboCat::SimulateMovement(float inDeltaTime)
 	//simulate us...
 	AdjustVelocityByThrust(inDeltaTime);
 	
-	SetLocation(GetLocation() + mVelocity * inDeltaTime);
+	
+	if (!IsOwnedByLocalPlayer())
+	{
+		SetLocation(GetLocation() + mVelocity * inDeltaTime);
+	}
 
 	ProcessCollisions();
 }
@@ -172,6 +176,8 @@ void RoboCat::ProcessCollisionsWithScreenWalls()
 		SetLocation(location);
 	}
 }
+
+
 
 uint32_t RoboCat::Write(OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState) const
 {

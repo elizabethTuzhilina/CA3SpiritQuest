@@ -23,7 +23,7 @@ public:
 	virtual void Update() override;
 
 	void ProcessInput(float inDeltaTime, const InputState& inInputState);
-	void SimulateMovement(float inDeltaTime);
+	virtual void SimulateMovement(float inDeltaTime);
 
 	void ProcessCollisions();
 	void ProcessCollisionsWithScreenWalls();
@@ -36,13 +36,21 @@ public:
 
 	virtual uint32_t	Write(OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState) const override;
 
+	// Will be overridden by RoboCatClient
+	
+	// Base hook - used in client subclasses like RoboCatClient
+	virtual bool IsOwnedByLocalPlayer() const { return false; }
+
+
 protected:
 	RoboCat();
+void	AdjustVelocityByThrust(float inDeltaTime);
 
 private:
 
 
-	void	AdjustVelocityByThrust(float inDeltaTime);
+	
+	
 
 	Vector3				mVelocity;
 

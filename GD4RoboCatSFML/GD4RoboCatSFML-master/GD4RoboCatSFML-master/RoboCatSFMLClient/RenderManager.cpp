@@ -1,4 +1,5 @@
 #include "RoboCatClientPCH.hpp"
+#include "iostream"
 //ET
 std::unique_ptr< RenderManager >	RenderManager::sInstance;
 
@@ -76,14 +77,33 @@ void RenderManager::RemoveComponent(SpriteComponent* inComponent)
 void RenderManager::AddPlatform(const std::string& textureName, const sf::Vector2f& position)
 {
 	TexturePtr tex = TextureManager::sInstance->GetTexture(textureName);
-	if (tex)
+	if (!tex)
 	{
-		sf::Sprite sprite;
-		sprite.setTexture(*tex);
-		sprite.setPosition(position);
-		sprite.setScale(0.4f, 0.4f); // adjust scale as needed
-		mPlatformSprites.push_back(sprite);
+		std::cout << "[Platform Error] Missing texture: " << textureName << std::endl;
+		return;
 	}
+
+	sf::Sprite sprite;
+	sprite.setTexture(*tex);
+	sprite.setPosition(position);
+	sprite.setScale(0.4f, 0.4f); // Match visual
+
+	//Store sprite 
+	
+	mPlatformSprites.push_back(sprite);
+
+	// Calculate collider before storing
+	sf::FloatRect fullBounds = sprite.getGlobalBounds();
+	sf::FloatRect collider(
+		fullBounds.left,
+		fullBounds.top + fullBounds.height / 2.f,
+		fullBounds.width,
+		fullBounds.height / 2.f
+	);
+
+	// stores collider
+	
+	mPlatformColliders.push_back(collider);
 }
 
 int RenderManager::GetComponentIndex(SpriteComponent* inComponent) const
@@ -160,6 +180,18 @@ void RenderManager::Render()
 	{
 		WindowManager::sInstance->draw(platform);
 	}
+#ifdef _DEBUG
+	for (const auto& rect : mPlatformColliders)
+	{
+		sf::RectangleShape debugRect;
+		debugRect.setPosition(rect.left, rect.top);
+		debugRect.setSize({ rect.width, rect.height });
+		debugRect.setFillColor(sf::Color::Transparent);
+		debugRect.setOutlineColor(sf::Color::Red);
+		debugRect.setOutlineThickness(1.f);
+		WindowManager::sInstance->draw(debugRect);
+	}
+#endif
 
 	RenderManager::sInstance->RenderComponents();
 

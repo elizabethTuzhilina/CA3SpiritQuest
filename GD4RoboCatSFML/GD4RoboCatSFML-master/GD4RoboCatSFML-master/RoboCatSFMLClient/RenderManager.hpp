@@ -15,7 +15,7 @@ public:
 	void RemoveComponent(SpriteComponent* inComponent);
 	int	 GetComponentIndex(SpriteComponent* inComponent) const;
 	void AddPlatform(const std::string& textureName, const sf::Vector2f& position);
-
+	const std::vector<sf::FloatRect>& GetPlatformColliders() const { return mPlatformColliders; }
 private:
 
 	RenderManager();
@@ -29,6 +29,9 @@ private:
 	sf::Sprite mBackgroundSprite;
 
 	std::vector<sf::Sprite> mPlatformSprites; // platform sprites
+	std::vector<sf::FloatRect> mPlatformColliders;
+	
+
 	float mCloud1Offset = 0.f;
 	float mCloud2Offset = 0.f;
 	sf::View view;
