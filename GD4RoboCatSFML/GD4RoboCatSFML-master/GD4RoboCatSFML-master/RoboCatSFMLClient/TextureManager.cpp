@@ -11,6 +11,12 @@ TextureManager::TextureManager()
 {
 	CacheTexture("cat", "../Assets/cat.png");
 	CacheTexture("mouse", "../Assets/mouse.png");
+
+	CacheTexture("ghost", "../Assets/Media/Textures/Ghost/ghostT.png");//ghost
+	CacheTexture("reaper", "../Assets/Media/Textures/Reaper(AnimatedPixelArt)/Preview/Reap.png");//reaper
+
+	CacheTexture("rock", "../Assets/Media/Textures/celestialrock.png");//rock
+
 	CacheTexture("yarn", "../Assets/yarn.png");
 	CacheTexture("background", "../Assets/Media/Textures/Clouds 3/1.png");//background
 	CacheTexture("moon", "../Assets/Media/Textures/Clouds 3/2.png");//moon

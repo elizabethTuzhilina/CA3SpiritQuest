@@ -5,7 +5,9 @@ RoboCatClient::RoboCatClient() :
 	mTimeVelocityBecameOutOfSync(0.f)
 {
 	mSpriteComponent.reset(new PlayerSpriteComponent(this));
-	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
+	//mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
+	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("ghost"));
+	
 }
 
 void RoboCatClient::HandleDying()
@@ -39,6 +41,8 @@ void RoboCatClient::Update()
 			Vector3 velocity = GetVelocity();
 			Vector3 newPos = GetLocation() + velocity * deltaTime;
 			sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
+
+			//mSpriteComponent->UpdateAnimation(deltaTime);
 
 
 			bool collided = false;

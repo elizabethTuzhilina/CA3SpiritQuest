@@ -1,6 +1,7 @@
 #include "RoboCatClientPCH.hpp"
 
 
+
 SpriteComponent::SpriteComponent(GameObject* inGameObject) :
 	mGameObject(inGameObject)
 {
@@ -17,10 +18,44 @@ SpriteComponent::~SpriteComponent()
 void SpriteComponent::SetTexture(TexturePtr inTexture)
 {
 	auto tSize = inTexture->getSize();
+	//mFrameHeight = static_cast<int>(tSize.y); 
 	m_sprite.setTexture(*inTexture);
 	m_sprite.setOrigin(tSize.x / 2, tSize.y / 2);
 	m_sprite.setScale(sf::Vector2f(1.f * mGameObject->GetScale(), 1.f * mGameObject->GetScale()));
+	
+	m_sprite.setScale(sf::Vector2f(mGameObject->GetScale(), mGameObject->GetScale()));
 }
+	
+//void SpriteComponent::SetAnimationParams(int frameWidth, int frameHeight, int frameCount, float frameTime)
+//{
+//	mFrameWidth = frameWidth;
+//	mFrameHeight = frameHeight;
+//	mFrameCount = frameCount;
+//	mFrameTime = frameTime;
+//
+//	// Reset to first frame
+//	mCurrentFrame = 0;
+//	mElapsedTime = 0.f;
+//
+//	// Set initial texture rect
+//	m_sprite.setTextureRect(sf::IntRect(0, 0, mFrameWidth, mFrameHeight));
+//}
+//void SpriteComponent::UpdateAnimation(float deltaTime)
+//{
+//	if (mFrameCount <= 1)
+//		return;
+//
+//	mElapsedTime += deltaTime;
+//	if (mElapsedTime >= mFrameTime)
+//	{
+//		mElapsedTime = 0.f;
+//		mCurrentFrame = (mCurrentFrame + 1) % mFrameCount;
+//
+//		sf::IntRect frameRect(mCurrentFrame * mFrameWidth, 0, mFrameWidth, mFrameHeight);
+//		m_sprite.setTextureRect(frameRect);
+//	}
+//}
+
 
 sf::Sprite& SpriteComponent::GetSprite()
 {

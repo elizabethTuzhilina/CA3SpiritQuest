@@ -6,6 +6,7 @@ PlayerSpriteComponent::PlayerSpriteComponent(GameObject* inGameObject) :
 
 sf::Sprite& PlayerSpriteComponent::GetSprite()
 {
+
 	// Update the sprite based on the game object stuff.
 	auto pos = mGameObject->GetLocation();
 	auto rot = mGameObject->GetRotation();
