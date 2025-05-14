@@ -1,6 +1,5 @@
 #include "RoboCatClientPCH.hpp"
 #include "iostream"
-#include <fstream>
 RoboCatClient::RoboCatClient() :
 	mTimeLocationBecameOutOfSync(0.f),
 	mTimeVelocityBecameOutOfSync(0.f)
@@ -8,18 +7,6 @@ RoboCatClient::RoboCatClient() :
 	mSpriteComponent.reset(new PlayerSpriteComponent(this));
 	//mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
 	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("ghost"));
-
-	std::ifstream input_file("name.txt");
-	std::string nametag;
-	if (input_file >> nametag)
-	{
-		SetPlayerName(nametag);
-	}
-	else
-	{
-		SetPlayerName("Unnamed Cat");
-
-	}
 	
 }
 

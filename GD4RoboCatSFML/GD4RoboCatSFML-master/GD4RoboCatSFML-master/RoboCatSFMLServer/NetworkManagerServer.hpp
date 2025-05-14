@@ -49,7 +49,7 @@ private:
 
 	int				mNewPlayerId;
 	int				mNewNetworkId;
-	string          mNewPlayerName;
+
 	float			mTimeOfLastSatePacket;
 	float			mTimeBetweenStatePackets;
 	float			mClientDisconnectTimeout;

@@ -8,10 +8,9 @@ public:
 		ECRS_Pose = 1 << 0,
 		ECRS_Color = 1 << 1,
 		ECRS_PlayerId = 1 << 2,
-		ECRS_PlayerName = 1 << 3,
 		ECRS_Health = 1 << 3,
 
-		ECRS_AllState = ECRS_Pose | ECRS_Color | ECRS_PlayerId | ECRS_PlayerName | ECRS_Health
+		ECRS_AllState = ECRS_Pose | ECRS_Color | ECRS_PlayerId | ECRS_Health
 	};
 
 
@@ -31,9 +30,6 @@ public:
 
 	void		SetPlayerId(uint32_t inPlayerId) { mPlayerId = inPlayerId; }
 	uint32_t	GetPlayerId()						const { return mPlayerId; }
-
-	void		SetPlayerName(string inPlayerName) { mPlayerName = inPlayerName; }
-	string	GetPlayerName()						const { return mPlayerName; }
 
 	void			SetVelocity(const Vector3& inVelocity) { mVelocity = inVelocity; }
 	const Vector3& GetVelocity()						const { return mVelocity; }
@@ -68,7 +64,6 @@ private:
 
 
 	uint32_t			mPlayerId;
-	string             mPlayerName;
 
 protected:
 

@@ -13,7 +13,6 @@ ClientProxy::ClientProxy(const SocketAddress& inSocketAddress, const string& inN
 	mIsLastMoveTimestampDirty(false),
 	mTimeToRespawn(0.f)
 {
-	
 	UpdateLastPacketTime();
 }
 

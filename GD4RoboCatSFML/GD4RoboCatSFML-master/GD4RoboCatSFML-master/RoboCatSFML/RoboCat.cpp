@@ -240,18 +240,6 @@ uint32_t RoboCat::Write(OutputMemoryBitStream& inOutputStream, uint32_t inDirtyS
 		inOutputStream.Write((bool)false);
 	}
 
-	if (inDirtyState & ECRS_PlayerName)
-	{
-		inOutputStream.Write((bool)true);
-		inOutputStream.Write(GetPlayerName());
-
-		writtenState |= ECRS_PlayerName;
-	}
-	else
-	{
-		inOutputStream.Write((bool)false);
-	}
-
 	if (inDirtyState & ECRS_Health)
 	{
 		inOutputStream.Write((bool)true);

@@ -1,6 +1,4 @@
 #include "RoboCatServerPCH.hpp"
-#include "iostream"
-#include <fstream>
 
 NetworkManagerServer* NetworkManagerServer::sInstance;
 
@@ -82,18 +80,6 @@ void NetworkManagerServer::HandlePacketFromNewClient(InputMemoryBitStream& inInp
 	{
 		//read the name
 		string name;
-
-		std::ifstream input_file("name.txt");
-		std::string nametag;
-		if (input_file >> nametag)
-		{
-			name = nametag;
-		}
-		else
-		{
-			name = "Unnamed Cat";
-
-		}
 		inInputStream.Read(name);
 		ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >(inFromAddress, name, mNewPlayerId++);
 		mAddressToClientMap[inFromAddress] = newClientProxy;
