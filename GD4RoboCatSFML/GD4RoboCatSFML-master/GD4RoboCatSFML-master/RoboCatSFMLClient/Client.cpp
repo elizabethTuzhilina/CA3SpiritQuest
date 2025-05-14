@@ -52,8 +52,6 @@ bool Client::StaticInit()
 
 Client::Client()
 {
-	GameObjectRegistry::StaticInit(); 
-
 	GameObjectRegistry::sInstance->RegisterCreationFunction('RCAT', RoboCatClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('MOUS', MouseClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('YARN', YarnClient::StaticCreate);

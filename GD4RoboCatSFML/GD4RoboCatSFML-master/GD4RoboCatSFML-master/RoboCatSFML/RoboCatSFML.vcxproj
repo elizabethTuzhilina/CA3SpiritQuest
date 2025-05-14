@@ -180,7 +180,6 @@
     <ClInclude Include="Timing.hpp" />
     <ClInclude Include="TransmissionData.hpp" />
     <ClInclude Include="UDPSocket.hpp" />
-    <ClInclude Include="VisualType.hpp" />
     <ClInclude Include="WeightedTimedMovingAverage.hpp" />
     <ClInclude Include="World.hpp" />
     <ClInclude Include="Yarn.hpp" />

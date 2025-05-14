@@ -17,7 +17,6 @@ bool Server::StaticInit()
 Server::Server()
 {
 
-	GameObjectRegistry::StaticInit();
 	GameObjectRegistry::sInstance->RegisterCreationFunction('RCAT', RoboCatServer::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('MOUS', MouseServer::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('YARN', YarnServer::StaticCreate);
@@ -102,35 +101,16 @@ void Server::HandleNewClient(ClientProxyPtr inClientProxy)
 	int playerId = inClientProxy->GetPlayerId();
 
 	ScoreBoardManager::sInstance->AddEntry(playerId, inClientProxy->GetName());
-	
-	// Alternating between Ghost and Reaper based on total player count
-	int index = ScoreBoardManager::sInstance->GetEntries().size();
-
-	VisualType assignedType = (index % 2 == 0) ? VisualType::kGhost : VisualType::kReaper;
-	inClientProxy->SetVisualType(assignedType);
-
-
 	SpawnCatForPlayer(playerId);
-	
-
 }
 
 void Server::SpawnCatForPlayer(int inPlayerId)
 {
 	RoboCatPtr cat = std::static_pointer_cast<RoboCat>(GameObjectRegistry::sInstance->CreateGameObject('RCAT'));
-	
-	ClientProxyPtr clientProxy = NetworkManagerServer::sInstance->GetClientProxy(inPlayerId);
-	if (clientProxy)
-	{
-		cat->SetVisualType(clientProxy->GetVisualType());
-	}
-
 	cat->SetColor(ScoreBoardManager::sInstance->GetEntry(inPlayerId)->GetColor());
 	cat->SetPlayerId(inPlayerId);
 	//gotta pick a better spawn location than this...
 	cat->SetLocation(Vector3(600.f - static_cast<float>(inPlayerId), 400.f, 0.f));
-	
-	
 }
 
 void Server::HandleLostClient(ClientProxyPtr inClientProxy)

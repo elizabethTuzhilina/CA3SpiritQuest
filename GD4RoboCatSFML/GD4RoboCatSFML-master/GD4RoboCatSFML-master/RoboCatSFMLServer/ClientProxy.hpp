@@ -25,13 +25,6 @@ public:
 	void	HandleCatDied();
 	void	RespawnCatIfNecessary();
 
-	//the miracle of shared files 
-	// visual type yay
-	
-	// Public getter/setter
-	VisualType GetVisualType() const { return mVisualType; }
-	void SetVisualType(VisualType vt) { mVisualType = vt; }
-
 private:
 
 	DeliveryNotificationManager	mDeliveryNotificationManager;
@@ -48,8 +41,8 @@ private:
 
 	MoveList		mUnprocessedMoveList;
 	bool			mIsLastMoveTimestampDirty;
-	//ET
-	VisualType mVisualType;
+
+
 
 };
 

@@ -1,6 +1,3 @@
-#include "VisualType.hpp"
-
-
 class RoboCat : public GameObject
 {
 public:
@@ -44,8 +41,6 @@ public:
 	// Base hook - used in client subclasses like RoboCatClient
 	virtual bool IsOwnedByLocalPlayer() const { return false; }
 
-	VisualType GetVisualType() const { return mVisualType; }
-	void SetVisualType(VisualType vt) { mVisualType = vt; }
 
 protected:
 	RoboCat();
@@ -70,9 +65,6 @@ private:
 
 	uint32_t			mPlayerId;
 
-	VisualType mVisualType;
-
-
 protected:
 
 	///move down here for padding reasons...
@@ -83,9 +75,6 @@ protected:
 	int					mHealth;
 
 	bool				mIsShooting;
-
-	
-
 };
 
 typedef shared_ptr< RoboCat >	RoboCatPtr;
