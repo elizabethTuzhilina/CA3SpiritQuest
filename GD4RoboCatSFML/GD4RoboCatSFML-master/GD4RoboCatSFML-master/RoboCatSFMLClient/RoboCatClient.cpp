@@ -40,7 +40,10 @@ void RoboCatClient::Update()
 			// Predict movement
 			Vector3 velocity = GetVelocity();
 			Vector3 newPos = GetLocation() + velocity * deltaTime;
-			sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
+			//sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
+			float radius = GetCollisionRadius(); // Usually 60.f as per RoboCat ctor
+			sf::FloatRect catBounds(newPos.mX - radius, newPos.mY - radius, radius * 2.f, radius * 2.f);
+
 
 			//mSpriteComponent->UpdateAnimation(deltaTime);
 
@@ -96,39 +99,62 @@ void RoboCatClient::Update()
 	}
 }
 
-
-
 void RoboCatClient::SimulateMovement(float inDeltaTime)
 {
 	AdjustVelocityByThrust(inDeltaTime);
 
-	Vector3 proposedLocation = GetLocation() + GetVelocity() * inDeltaTime;
-	sf::FloatRect catBounds(proposedLocation.mX - 16.f, proposedLocation.mY - 16.f, 32.f, 32.f);
+	Vector3 velocity = GetVelocity();
+	Vector3 position = GetLocation();
+	float radius = GetCollisionRadius();
 
-	bool blocked = false;
+	// X-axis move
+	Vector3 newPosX = position;
+	newPosX.mX += velocity.mX * inDeltaTime;
+	sf::FloatRect boundsX(newPosX.mX - radius, newPosX.mY - radius, radius * 2.f, radius * 2.f);
+
 	for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
 	{
-		if (catBounds.intersects(platform))
+		if (boundsX.intersects(platform))
 		{
-			blocked = true;
-			std::cout << "[COLLISION] RoboCatClient collided with platform at: "
-				<< platform.left << ", " << platform.top << "\n";
+			sf::FloatRect overlap;
+			overlap.left = std::max(boundsX.left, platform.left);
+			overlap.top = std::max(boundsX.top, platform.top);
+			overlap.width = std::min(boundsX.left + boundsX.width, platform.left + platform.width) - overlap.left;
+			overlap.height = std::min(boundsX.top + boundsX.height, platform.top + platform.height) - overlap.top;
+
+			newPosX.mX += (boundsX.left < platform.left) ? -overlap.width : overlap.width;
+			velocity.mX = 0.f;
 			break;
 		}
 	}
 
-	if (!blocked)
+	// Y-axis move
+	Vector3 newPosY = newPosX;
+	newPosY.mY += velocity.mY * inDeltaTime;
+	sf::FloatRect boundsY(newPosY.mX - radius, newPosY.mY - radius, radius * 2.f, radius * 2.f);
+
+	for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
 	{
-		SetLocation(proposedLocation);
-	}
-	else
-	{
-		SetVelocity(Vector3::Zero);
+		if (boundsY.intersects(platform))
+		{
+			sf::FloatRect overlap;
+			overlap.left = std::max(boundsY.left, platform.left);
+			overlap.top = std::max(boundsY.top, platform.top);
+			overlap.width = std::min(boundsY.left + boundsY.width, platform.left + platform.width) - overlap.left;
+			overlap.height = std::min(boundsY.top + boundsY.height, platform.top + platform.height) - overlap.top;
+
+			newPosY.mY += (boundsY.top < platform.top) ? -overlap.height : overlap.height;
+			velocity.mY = 0.f;
+			break;
+		}
 	}
 
-	// Still run other GameObject collisions like cats
+	SetLocation(newPosY);
+	SetVelocity(velocity);
+
 	RoboCat::ProcessCollisionsWithScreenWalls();
 }
+
 
 
 

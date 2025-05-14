@@ -94,12 +94,22 @@ void RenderManager::AddPlatform(const std::string& textureName, const sf::Vector
 
 	// Calculate collider before storing
 	sf::FloatRect fullBounds = sprite.getGlobalBounds();
+	//sf::FloatRect collider(
+	///	fullBounds.left,
+		//fullBounds.top + fullBounds.height / 2.f,
+		//fullBounds.width,
+		//fullBounds.height / 2.f
+	//);
+	float colliderPad = 2.f;
 	sf::FloatRect collider(
 		fullBounds.left,
-		fullBounds.top + fullBounds.height / 2.f,
+		fullBounds.top + fullBounds.height / 2.f - colliderPad,
 		fullBounds.width,
-		fullBounds.height / 2.f
+		fullBounds.height / 2.f + 2 * colliderPad
 	);
+
+
+
 
 	// stores collider
 	
