@@ -2,7 +2,7 @@ class ClientProxy
 {
 public:
 
-	ClientProxy(const SocketAddress& inSocketAddress, const string& inName, int inPlayerId);
+	ClientProxy(const SocketAddress& inSocketAddress, const string& inName, int inPlayerId, VisualType type);
 
 	const	SocketAddress& GetSocketAddress()	const { return mSocketAddress; }
 	int				GetPlayerId()		const { return mPlayerId; }

@@ -6,6 +6,7 @@ NetworkManagerServer* NetworkManagerServer::sInstance;
 NetworkManagerServer::NetworkManagerServer() :
 	mNewPlayerId(1),
 	mNewNetworkId(1),
+	mNewVisualType(),
 	mTimeBetweenStatePackets(0.033f),
 	mClientDisconnectTimeout(3.f)
 {
@@ -81,7 +82,7 @@ void NetworkManagerServer::HandlePacketFromNewClient(InputMemoryBitStream& inInp
 		//read the name
 		string name;
 		inInputStream.Read(name);
-		ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >(inFromAddress, name, mNewPlayerId++);
+		ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >(inFromAddress, name, mNewPlayerId++, mNewVisualType);
 		mAddressToClientMap[inFromAddress] = newClientProxy;
 		mPlayerIdToClientMap[newClientProxy->GetPlayerId()] = newClientProxy;
 

@@ -6,7 +6,7 @@ namespace
 	const float kRespawnDelay = 3.f;
 }
 
-ClientProxy::ClientProxy(const SocketAddress& inSocketAddress, const string& inName, int inPlayerId) : 
+ClientProxy::ClientProxy(const SocketAddress& inSocketAddress, const string& inName, int inPlayerId, VisualType type) :
 	mSocketAddress(inSocketAddress),
 	mName(inName),
 	mPlayerId(inPlayerId),

@@ -49,6 +49,7 @@ private:
 
 	int				mNewPlayerId;
 	int				mNewNetworkId;
+	VisualType      mNewVisualType;
 
 	float			mTimeOfLastSatePacket;
 	float			mTimeBetweenStatePackets;
