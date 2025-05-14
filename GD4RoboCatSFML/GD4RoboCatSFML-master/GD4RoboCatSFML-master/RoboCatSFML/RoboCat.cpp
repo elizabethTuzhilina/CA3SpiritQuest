@@ -15,7 +15,8 @@ RoboCat::RoboCat() :
 	mIsShooting(false),
 	mHealth(10)
 {
-	SetCollisionRadius(60.f);
+	SetCollisionRadius(16.f);
+
 }
 
 void RoboCat::ProcessInput(float inDeltaTime, const InputState& inInputState)

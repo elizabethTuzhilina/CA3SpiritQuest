@@ -6,7 +6,7 @@ RoboCatClient::RoboCatClient() :
 {
 	mSpriteComponent.reset(new PlayerSpriteComponent(this));
 	//mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
-	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("ghost"));
+	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("reaper"));
 	
 }
 

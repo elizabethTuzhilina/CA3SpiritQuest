@@ -180,6 +180,8 @@ void RenderManager::Render()
 	{
 		WindowManager::sInstance->draw(platform);
 	}
+
+	// debug red
 #ifdef _DEBUG
 	for (const auto& rect : mPlatformColliders)
 	{
@@ -191,7 +193,25 @@ void RenderManager::Render()
 		debugRect.setOutlineThickness(1.f);
 		WindowManager::sInstance->draw(debugRect);
 	}
+	
+	for (const auto& go : World::sInstance->GetGameObjects())
+	{
+		float radius = go->GetCollisionRadius();
+		if (radius <= 0.f)
+			continue;
+
+		sf::CircleShape debugCircle;
+		debugCircle.setRadius(radius);
+		debugCircle.setOrigin(radius, radius);
+		debugCircle.setPosition(go->GetLocation().mX, go->GetLocation().mY);
+		debugCircle.setOutlineColor(sf::Color::Cyan);
+		debugCircle.setOutlineThickness(1.f);
+		debugCircle.setFillColor(sf::Color::Transparent);
+
+		WindowManager::sInstance->draw(debugCircle);  // Assuming you have access to window
+	}
 #endif
+	
 
 	RenderManager::sInstance->RenderComponents();
 
