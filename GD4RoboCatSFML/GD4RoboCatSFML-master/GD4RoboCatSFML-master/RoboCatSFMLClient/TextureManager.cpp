@@ -10,8 +10,14 @@ void TextureManager::StaticInit()
 TextureManager::TextureManager()
 {
 	CacheTexture("cat", "../Assets/cat.png");
+	CacheTexture("reaper", "../Assets/Media/Textures/Ghost/ghost-Sheet.png");//reaper
+	CacheTexture("ghost", "../Assets/Media/Textures/Reaper(AnimatedPixelArt)/Preview/Reap.png");//ghost
+
+
 	CacheTexture("mouse", "../Assets/mouse.png");
 	CacheTexture("yarn", "../Assets/yarn.png");
+	CacheTexture("rock", "../Assets/Media/Textures/celestialrock.png");//rock
+
 	CacheTexture("background", "../Assets/Media/Textures/Clouds 3/1.png");//background
 	CacheTexture("moon", "../Assets/Media/Textures/Clouds 3/2.png");//moon
 	CacheTexture("clouds1", "../Assets/Media/Textures/Clouds 3/3.png");//cloud 1

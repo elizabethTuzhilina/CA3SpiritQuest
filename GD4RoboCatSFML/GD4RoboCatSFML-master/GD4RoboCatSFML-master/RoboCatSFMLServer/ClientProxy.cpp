@@ -1,4 +1,5 @@
 #include "RoboCatServerPCH.hpp"
+#include "VisualType.hpp"
 
 namespace
 {

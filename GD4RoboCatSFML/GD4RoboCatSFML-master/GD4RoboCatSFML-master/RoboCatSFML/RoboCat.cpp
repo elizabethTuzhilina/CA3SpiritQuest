@@ -1,4 +1,5 @@
 #include "RoboCatPCH.hpp"
+#include "VisualType.hpp"
 
 const float WORLD_HEIGHT = 720.f;
 const float WORLD_WIDTH = 1280.f;
@@ -232,7 +233,7 @@ uint32_t RoboCat::Write(OutputMemoryBitStream& inOutputStream, uint32_t inDirtyS
 	{
 		inOutputStream.Write((bool)true);
 		inOutputStream.Write(GetColor());
-
+		inOutputStream.Write(static_cast<uint8_t>(mVisualType));
 		writtenState |= ECRS_Color;
 	}
 	else
