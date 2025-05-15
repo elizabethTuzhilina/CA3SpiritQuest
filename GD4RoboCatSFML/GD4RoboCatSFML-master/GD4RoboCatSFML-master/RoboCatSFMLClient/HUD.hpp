@@ -10,6 +10,7 @@ public:
 	void Render();
 
 	void SetPlayerHealth(int inHealth) { mHealth = inHealth; }
+	
 
 private:
 
@@ -19,7 +20,8 @@ private:
 	void	RenderRoundTripTime();
 	void	RenderScoreBoard();
 	void	RenderHealth();
-	void	RenderText(const string& inStr, const Vector3& origin, const Vector3& inColor);
+	void    RenderText(const string& inStr, const Vector3& origin, const Vector3& inColor);
+	
 
 	Vector3										mBandwidthOrigin;
 	Vector3										mRoundTripTimeOrigin;

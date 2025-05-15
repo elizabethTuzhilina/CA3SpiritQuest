@@ -11,7 +11,19 @@ RoboCatClient::RoboCatClient() :
 {
 	mSpriteComponent.reset(new PlayerSpriteComponent(this));
 	//mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
+
+
+	const string& m_name_display = StringUtils::GetCommandLineArg(2);
+	//std::unique_ptr<HUD> name_display;
+	//NetworkManagerClient::sInstance->GetPlayerId();
+	Vector3 offset(0.3f,0.3f,0.3f);
+	//mSpriteComponent->ShowTag(name, this->GetLocation(), Colors::Red);
+
+	RenderManager::sInstance->DrawPlayerTag(m_name_display, this->GetLocation()+offset, Colors::Red);
+
+
 	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("reaper"));
+
 	
 }
 
@@ -40,6 +52,14 @@ void RoboCatClient::Update()
 			float deltaTime = Timing::sInstance.GetDeltaTime();
 
 			ProcessInput(deltaTime, pendingMove->GetInputState());
+
+
+			
+			const string& m_name_display = StringUtils::GetCommandLineArg(2);
+			RenderManager::sInstance->DrawPlayerTag(m_name_display, newPos, Colors::Red);
+			RenderManager::sInstance->GetPlayerTags();
+
+	
 			SimulateMovement(deltaTime);
 		}
 	}
@@ -136,6 +156,10 @@ void RoboCatClient::Read(InputMemoryBitStream& inInputStream)
 		readState |= ECRS_PlayerId;
 	}
 
+	
+		
+	
+
 	float oldRotation = GetRotation();
 	Vector3 oldLocation = GetLocation();
 	Vector3 oldVelocity = GetVelocity();
@@ -159,6 +183,12 @@ void RoboCatClient::Read(InputMemoryBitStream& inInputStream)
 
 		inInputStream.Read(replicatedRotation);
 		SetRotation(replicatedRotation);
+
+		const string& m_name_display = StringUtils::GetCommandLineArg(2);
+		//inInputStream.Read(m_name_display);
+		RenderManager::sInstance->DrawPlayerTag(m_name_display, this->GetLocation(), Colors::Red);
+		//SetPlayerId(playerId);
+		readState |= ECRS_Tag;
 
 		readState |= ECRS_Pose;
 	}

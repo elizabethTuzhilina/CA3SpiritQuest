@@ -13,7 +13,9 @@ bool Client::StaticInit()
 	HUD::StaticInit();
 
 	//Platforms for world cached in Texture Manager
+
 	RenderManager::sInstance->InitializeStaticPlatforms();
+
 
 	s_instance.reset(client);
 

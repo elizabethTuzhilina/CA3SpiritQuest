@@ -22,7 +22,9 @@ private:
 	void InterpolateClientSidePrediction(float inOldRotation, const Vector3& inOldLocation, const Vector3& inOldVelocity, bool inIsForRemoteCat);
 	float				mTimeLocationBecameOutOfSync;
 	float				mTimeVelocityBecameOutOfSync;
+	std::unique_ptr<string>*				 m_name_display;
 	bool mIsGrounded = false; 
+
 
 	SpriteComponentPtr	mSpriteComponent;
 };
