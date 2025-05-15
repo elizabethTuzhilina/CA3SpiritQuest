@@ -1,12 +1,17 @@
 #include "RoboCatClientPCH.hpp"
 #include "iostream"
+
+constexpr float WORLD_WIDTH = 1280.f;
+constexpr float WORLD_HEIGHT = 720.f;
+
+
 RoboCatClient::RoboCatClient() :
 	mTimeLocationBecameOutOfSync(0.f),
 	mTimeVelocityBecameOutOfSync(0.f)
 {
 	mSpriteComponent.reset(new PlayerSpriteComponent(this));
 	//mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("cat"));
-	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("ghost"));
+
 
 	const string& m_name_display = StringUtils::GetCommandLineArg(2);
 	//std::unique_ptr<HUD> name_display;
@@ -16,7 +21,9 @@ RoboCatClient::RoboCatClient() :
 
 	RenderManager::sInstance->DrawPlayerTag(m_name_display, this->GetLocation()+offset, Colors::Red);
 
-	
+
+	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("reaper"));
+
 	
 }
 
@@ -42,64 +49,24 @@ void RoboCatClient::Update()
 		const Move* pendingMove = InputManager::sInstance->GetAndClearPendingMove();
 		if (pendingMove)
 		{
-			float deltaTime = pendingMove->GetDeltaTime();
+			float deltaTime = Timing::sInstance.GetDeltaTime();
 
-			// Apply input
 			ProcessInput(deltaTime, pendingMove->GetInputState());
 
-			// Predict movement
-			Vector3 velocity = GetVelocity();
-			Vector3 newPos = GetLocation() + velocity * deltaTime;
-			sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
 
-			//mSpriteComponent->UpdateAnimation(deltaTime);
+			
 			const string& m_name_display = StringUtils::GetCommandLineArg(2);
 			RenderManager::sInstance->DrawPlayerTag(m_name_display, newPos, Colors::Red);
 			RenderManager::sInstance->GetPlayerTags();
 
-			bool collided = false;
-
-			for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
-			{
-				if (catBounds.intersects(platform))
-				{
-					sf::FloatRect overlap;
-					overlap.left = std::max(catBounds.left, platform.left);
-					overlap.top = std::max(catBounds.top, platform.top);
-					overlap.width = std::min(catBounds.left + catBounds.width, platform.left + platform.width) - overlap.left;
-					overlap.height = std::min(catBounds.top + catBounds.height, platform.top + platform.height) - overlap.top;
-
-					// Resolve collision
-					if (overlap.width < overlap.height)
-					{
-						// Horizontal
-						newPos.mX += (catBounds.left < platform.left) ? -overlap.width : overlap.width;
-						velocity.mX = 0.f;
-					}
-					else
-					{
-						// Vertical
-						newPos.mY += (catBounds.top < platform.top) ? -overlap.height : overlap.height;
-						velocity.mY = 0.f;
-					}
-
-					collided = true;
-					break;
-				}
-			}
-
-			SetLocation(newPos);
-			SetVelocity(velocity);
-
-			if (collided)
-			{
-				std::cout << "[COLLISION] RoboCat collided with platform.\n";
-			}
+	
+			SimulateMovement(deltaTime);
 		}
 	}
 	else
 	{
-		SimulateMovement(Timing::sInstance.GetDeltaTime());
+		float deltaTime = Timing::sInstance.GetDeltaTime();
+		SimulateMovement(deltaTime);
 
 		if (RoboMath::Is2DVectorEqual(GetVelocity(), Vector3::Zero))
 		{
@@ -107,41 +74,71 @@ void RoboCatClient::Update()
 		}
 	}
 }
-
-
-
 void RoboCatClient::SimulateMovement(float inDeltaTime)
 {
-	AdjustVelocityByThrust(inDeltaTime);
+	Vector3 velocity = GetVelocity();
+	Vector3 position = GetLocation();
+	const float radius = GetCollisionRadius();
+	mIsGrounded = false;
 
-	Vector3 proposedLocation = GetLocation() + GetVelocity() * inDeltaTime;
-	sf::FloatRect catBounds(proposedLocation.mX - 16.f, proposedLocation.mY - 16.f, 32.f, 32.f);
+	// Substep for tunneling prevention
+	const float step = 1.f / 120.f; // simulate at 120Hz resolution
+	float timeRemaining = inDeltaTime;
 
-	bool blocked = false;
-	for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
+	while (timeRemaining > 0.f)
 	{
-		if (catBounds.intersects(platform))
+		float dt = std::min(step, timeRemaining);
+		timeRemaining -= dt;
+
+		// === X Axis Movement ===
+		position.mX += velocity.mX * dt;
+		sf::FloatRect boundsX(position.mX - radius, position.mY - radius, radius * 2.f, radius * 2.f);
+		for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
 		{
-			blocked = true;
-			std::cout << "[COLLISION] RoboCatClient collided with platform at: "
-				<< platform.left << ", " << platform.top << "\n";
-			break;
+			if (boundsX.intersects(platform))
+			{
+				if (velocity.mX > 0.f)
+					position.mX = platform.left - radius;
+				else if (velocity.mX < 0.f)
+					position.mX = platform.left + platform.width + radius;
+
+				velocity.mX = 0.f;
+				break;
+			}
+		}
+
+		// === Y Axis Movement ===
+		position.mY += velocity.mY * dt;
+		sf::FloatRect boundsY(position.mX - radius, position.mY - radius, radius * 2.f, radius * 2.f);
+		for (const auto& platform : RenderManager::sInstance->GetPlatformColliders())
+		{
+			if (boundsY.intersects(platform))
+			{
+				if (velocity.mY > 0.f)
+				{
+					position.mY = platform.top - radius;
+					mIsGrounded = true;
+				}
+				else
+				{
+					position.mY = platform.top + platform.height + radius;
+				}
+
+				velocity.mY = 0.f;
+				break;
+			}
 		}
 	}
 
-	if (!blocked)
-	{
-		SetLocation(proposedLocation);
-	}
-	else
-	{
-		SetVelocity(Vector3::Zero);
-	}
 
-	// Still run other GameObject collisions like cats
-	RoboCat::ProcessCollisionsWithScreenWalls();
+	// Clamp to screen edges
+	position.mX = std::max(radius, std::min(position.mX, WORLD_WIDTH - radius));
+
+	position.mY = std::max(radius, std::min(position.mY, WORLD_HEIGHT - radius));
+
+	SetLocation(position);
+	SetVelocity(velocity);
 }
-
 
 
 void RoboCatClient::Read(InputMemoryBitStream& inInputStream)
@@ -263,13 +260,18 @@ void RoboCatClient::DoClientSidePredictionAfterReplicationForLocalCat(uint32_t i
 		//all processed moves have been removed, so all that are left are unprocessed moves
 		//so we must apply them...
 		const MoveList& moveList = InputManager::sInstance->GetMoveList();
-
 		for (const Move& move : moveList)
 		{
-			float deltaTime = move.GetDeltaTime();
-			ProcessInput(deltaTime, move.GetInputState());
+			float remaining = move.GetDeltaTime();
+			ProcessInput(remaining, move.GetInputState());
 
-			SimulateMovement(deltaTime);
+			float fixedStep = 1.f / 60.f;
+			while (remaining > 0.f)
+			{
+				float step = std::min(remaining, fixedStep);
+				SimulateMovement(step);
+				remaining -= step;
+			}
 		}
 	}
 }

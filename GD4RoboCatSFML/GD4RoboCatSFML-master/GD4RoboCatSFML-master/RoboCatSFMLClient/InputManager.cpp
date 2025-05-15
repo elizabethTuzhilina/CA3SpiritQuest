@@ -27,34 +27,22 @@ namespace
 		}
 	}
 
-	inline void UpdateDesireFloatFromKey(EInputAction inInputAction, float& ioVariable)
-	{
-		if (inInputAction == EIA_Pressed)
-		{
-			ioVariable = 1.f;
-		}
-		else if (inInputAction == EIA_Released)
-		{
-			ioVariable = 0.f;
-		}
-	}
 }
-
 void InputManager::HandleInput(EInputAction inInputAction, int inKeyCode)
 {
 	switch (inKeyCode)
 	{
-	case sf::Keyboard::A:
-		UpdateDesireFloatFromKey(inInputAction, mCurrentState.mDesiredLeftAmount);
-		break;
-	case sf::Keyboard::D:
-		UpdateDesireFloatFromKey(inInputAction, mCurrentState.mDesiredRightAmount);
-		break;
 	case sf::Keyboard::W:
-		UpdateDesireFloatFromKey(inInputAction, mCurrentState.mDesiredForwardAmount);
+		UpdateDesireVariableFromKey(inInputAction, mCurrentState.mMoveUp);
 		break;
 	case sf::Keyboard::S:
-		UpdateDesireFloatFromKey(inInputAction, mCurrentState.mDesiredBackAmount);
+		UpdateDesireVariableFromKey(inInputAction, mCurrentState.mMoveDown);
+		break;
+	case sf::Keyboard::A:
+		UpdateDesireVariableFromKey(inInputAction, mCurrentState.mMoveLeft);
+		break;
+	case sf::Keyboard::D:
+		UpdateDesireVariableFromKey(inInputAction, mCurrentState.mMoveRight);
 		break;
 	case sf::Keyboard::K:
 		UpdateDesireVariableFromKey(inInputAction, mCurrentState.mIsShooting);
@@ -63,27 +51,18 @@ void InputManager::HandleInput(EInputAction inInputAction, int inKeyCode)
 	case sf::Keyboard::Equal:
 	{
 		float latency = NetworkManagerClient::sInstance->GetSimulatedLatency();
-		latency += 0.1f;
-		if (latency > 0.5f)
-		{
-			latency = 0.5f;
-		}
+		latency = std::min(latency + 0.1f, 0.5f);
 		NetworkManagerClient::sInstance->SetSimulatedLatency(latency);
 		break;
 	}
 	case sf::Keyboard::Subtract:
 	{
 		float latency = NetworkManagerClient::sInstance->GetSimulatedLatency();
-		latency -= 0.1f;
-		if (latency < 0.0f)
-		{
-			latency = 0.0f;
-		}
+		latency = std::max(latency - 0.1f, 0.0f);
 		NetworkManagerClient::sInstance->SetSimulatedLatency(latency);
 		break;
 	}
 	}
-
 }
 
 

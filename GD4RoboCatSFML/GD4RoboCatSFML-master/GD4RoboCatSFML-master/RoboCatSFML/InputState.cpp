@@ -2,48 +2,35 @@
 
 namespace
 {
-	void WriteSignedBinaryValue(OutputMemoryBitStream& inOutputStream, float inValue)
+	void WriteBool(OutputMemoryBitStream& inOutputStream, bool value)
 	{
-		bool isNonZero = (inValue != 0.f);
-		inOutputStream.Write(isNonZero);
-		if (isNonZero)
-		{
-			inOutputStream.Write(inValue > 0.f);
-		}
+		inOutputStream.Write(value);
 	}
 
-	void ReadSignedBinaryValue(InputMemoryBitStream& inInputStream, float& outValue)
+	void ReadBool(InputMemoryBitStream& inInputStream, bool& outValue)
 	{
-		bool isNonZero;
-		inInputStream.Read(isNonZero);
-		if (isNonZero)
-		{
-			bool isPositive;
-			inInputStream.Read(isPositive);
-			outValue = isPositive ? 1.f : -1.f;
-		}
-		else
-		{
-			outValue = 0.f;
-		}
+		inInputStream.Read(outValue);
 	}
 }
 
 bool InputState::Write(OutputMemoryBitStream& inOutputStream) const
 {
-	WriteSignedBinaryValue(inOutputStream, GetDesiredHorizontalDelta());
-	WriteSignedBinaryValue(inOutputStream, GetDesiredVerticalDelta());
-	inOutputStream.Write(mIsShooting);
+	WriteBool(inOutputStream, mMoveUp);
+	WriteBool(inOutputStream, mMoveDown);
+	WriteBool(inOutputStream, mMoveLeft);
+	WriteBool(inOutputStream, mMoveRight);
+	WriteBool(inOutputStream, mIsShooting);
 
-	return false;
+	return true;
 }
 
 bool InputState::Read(InputMemoryBitStream& inInputStream)
 {
-
-	ReadSignedBinaryValue(inInputStream, mDesiredRightAmount);
-	ReadSignedBinaryValue(inInputStream, mDesiredForwardAmount);
-	inInputStream.Read(mIsShooting);
+	ReadBool(inInputStream, mMoveUp);
+	ReadBool(inInputStream, mMoveDown);
+	ReadBool(inInputStream, mMoveLeft);
+	ReadBool(inInputStream, mMoveRight);
+	ReadBool(inInputStream, mIsShooting);
 
 	return true;
 }

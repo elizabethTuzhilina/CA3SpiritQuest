@@ -1,18 +1,17 @@
 class InputState
 {
 public:
-
-	InputState() :
-		mDesiredRightAmount(0),
-		mDesiredLeftAmount(0),
-		mDesiredForwardAmount(0),
-		mDesiredBackAmount(0),
+	InputState() 
+		: mMoveUp(false), mMoveDown(false), mMoveLeft(false), mMoveRight(false),
 		mIsShooting(false)
 	{}
 
-	float GetDesiredHorizontalDelta()	const { return mDesiredRightAmount - mDesiredLeftAmount; }
-	float GetDesiredVerticalDelta()		const { return mDesiredForwardAmount - mDesiredBackAmount; }
-	bool  IsShooting()					const { return mIsShooting; }
+	// Directional checks
+	bool IsUp() const { return mMoveUp; }
+	bool IsDown() const { return mMoveDown; }
+	bool IsLeft() const { return mMoveLeft; }
+	bool IsRight() const { return mMoveRight; }
+	bool IsShooting() const { return mIsShooting; }
 
 	bool Write(OutputMemoryBitStream& inOutputStream) const;
 	bool Read(InputMemoryBitStream& inInputStream);
@@ -20,7 +19,7 @@ public:
 private:
 	friend class InputManager;
 
-	float mDesiredRightAmount, mDesiredLeftAmount;
-	float mDesiredForwardAmount, mDesiredBackAmount;
-	bool mIsShooting;
+	bool mMoveUp, mMoveDown;
+	bool mMoveLeft, mMoveRight;
+	bool  mIsShooting;
 };

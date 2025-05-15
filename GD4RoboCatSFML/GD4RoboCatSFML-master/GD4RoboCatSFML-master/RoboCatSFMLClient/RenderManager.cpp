@@ -109,17 +109,63 @@ void RenderManager::AddPlatform(const std::string& textureName, const sf::Vector
 
 	// Calculate collider before storing
 	sf::FloatRect fullBounds = sprite.getGlobalBounds();
+	//sf::FloatRect collider(
+	///	fullBounds.left,
+		//fullBounds.top + fullBounds.height / 2.f,
+		//fullBounds.width,
+		//fullBounds.height / 2.f
+	//);
+	float colliderPad = 2.f;
 	sf::FloatRect collider(
 		fullBounds.left,
-		fullBounds.top + fullBounds.height / 2.f,
+		fullBounds.top + fullBounds.height / 2.f - colliderPad,
 		fullBounds.width,
-		fullBounds.height / 2.f
+		fullBounds.height / 2.f + 2 * colliderPad
 	);
+
+
+
 
 	// stores collider
 	
 	mPlatformColliders.push_back(collider);
 }
+
+void RenderManager::InitializeStaticPlatforms()
+{
+	AddPlatform("plat2D", sf::Vector2f(0.f, 690.f));     // left
+	AddPlatform("plat2G", sf::Vector2f(215.f, 700.f));   // center
+	AddPlatform("plat2D", sf::Vector2f(430.f, 690.f));   // right 1
+	AddPlatform("plat2F", sf::Vector2f(645.f, 690.f));   // right 2
+	AddPlatform("plat2D", sf::Vector2f(970.f, 690.f));   // far right 
+	AddPlatform("plat1A", sf::Vector2f(1150.f, 695.f));
+
+	// Level 0
+	AddPlatform("plat2D", sf::Vector2f(250.f, 550.f));
+	AddPlatform("plat2A", sf::Vector2f(700.f, 550.f));
+	AddPlatform("plat1A", sf::Vector2f(1000.f, 605.f));
+
+	// Level 1
+	AddPlatform("plat1A", sf::Vector2f(100.f, 450.f));
+	AddPlatform("plat1B", sf::Vector2f(500.f, 450.f));
+
+	// Level 2
+	AddPlatform("plat2A", sf::Vector2f(250.f, 350.f));
+	AddPlatform("plat2B", sf::Vector2f(700.f, 350.f));
+
+	// Level 3
+	AddPlatform("plat2C", sf::Vector2f(150.f, 250.f));
+	AddPlatform("plat2D", sf::Vector2f(600.f, 250.f));
+
+	// Level 4
+	AddPlatform("plat2E", sf::Vector2f(300.f, 150.f));
+	AddPlatform("plat2F", sf::Vector2f(800.f, 150.f));
+	AddPlatform("plat2B", sf::Vector2f(100.f, 110.f));
+
+	// Top platform
+	AddPlatform("plat2G", sf::Vector2f(400.f, 50.f));
+}
+
 
 int RenderManager::GetComponentIndex(SpriteComponent* inComponent) const
 {
@@ -199,6 +245,8 @@ void RenderManager::Render()
 	{
 		WindowManager::sInstance->draw(platform);
 	}
+
+	// debug red
 #ifdef _DEBUG
 	for (const auto& rect : mPlatformColliders)
 	{
@@ -210,7 +258,25 @@ void RenderManager::Render()
 		debugRect.setOutlineThickness(1.f);
 		WindowManager::sInstance->draw(debugRect);
 	}
+	
+	for (const auto& go : World::sInstance->GetGameObjects())
+	{
+		float radius = go->GetCollisionRadius();
+		if (radius <= 0.f)
+			continue;
+
+		sf::CircleShape debugCircle;
+		debugCircle.setRadius(radius);
+		debugCircle.setOrigin(radius, radius);
+		debugCircle.setPosition(go->GetLocation().mX, go->GetLocation().mY);
+		debugCircle.setOutlineColor(sf::Color::Cyan);
+		debugCircle.setOutlineThickness(1.f);
+		debugCircle.setFillColor(sf::Color::Transparent);
+
+		WindowManager::sInstance->draw(debugCircle);  // Assuming you have access to window
+	}
 #endif
+	
 
 	RenderManager::sInstance->RenderComponents();
 

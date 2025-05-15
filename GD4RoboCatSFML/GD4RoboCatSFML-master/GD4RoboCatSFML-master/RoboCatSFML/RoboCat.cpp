@@ -6,7 +6,7 @@ const float WORLD_WIDTH = 1280.f;
 RoboCat::RoboCat() :
 	GameObject(),
 	mMaxRotationSpeed(100.f),
-	mMaxLinearSpeed(5000.f),
+	mMaxLinearSpeed(100.f),
 	mVelocity(Vector3::Zero),
 	mWallRestitution(0.1f),
 	mCatRestitution(0.1f),
@@ -15,38 +15,54 @@ RoboCat::RoboCat() :
 	mIsShooting(false),
 	mHealth(10)
 {
-	SetCollisionRadius(60.f);
+	SetCollisionRadius(16.f);
+
 }
 
 void RoboCat::ProcessInput(float inDeltaTime, const InputState& inInputState)
 {
-	//process our input....
+	// Compute input direction
+	Vector3 inputVelocity = Vector3::Zero;
 
-	//turning...
-	float newRotation = GetRotation() + inInputState.GetDesiredHorizontalDelta() * mMaxRotationSpeed * inDeltaTime;
-	SetRotation(newRotation);
+	if (inInputState.IsUp())    inputVelocity.mY -= 1.f;
+	if (inInputState.IsDown())  inputVelocity.mY += 1.f;
+	if (inInputState.IsLeft())  inputVelocity.mX -= 1.f;
+	if (inInputState.IsRight()) inputVelocity.mX += 1.f;
 
-	//moving...
-	float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
-	mThrustDir = inputForwardDelta;
+	// Normalize to keep diagonal speed consistent
+	if (inputVelocity.LengthSq2D() > 0.f)
+	{
+		inputVelocity.Normalize2D();
+		inputVelocity *= mMaxLinearSpeed; // Use your max speed value
+	}
 
-
+	SetVelocity(inputVelocity);             
 	mIsShooting = inInputState.IsShooting();
-
 }
 
-void RoboCat::AdjustVelocityByThrust(float inDeltaTime)
-{
-	//just set the velocity based on the thrust direction -- no thrust will lead to 0 velocity
-	//simulating acceleration makes the client prediction a bit more complex
-	Vector3 forwardVector = GetForwardVector();
-	mVelocity = forwardVector * (mThrustDir * inDeltaTime * mMaxLinearSpeed);
-}
+//void RoboCat::AdjustVelocityByThrust(float inDeltaTime)
+//{
+//	//just set the velocity based on the thrust direction -- no thrust will lead to 0 velocity
+//	//simulating acceleration makes the client prediction a bit more complex
+//	Vector3 forwardVector = GetForwardVector();
+//	const float acceleration = mThrustDir * mMaxLinearSpeed;
+//	// Allow thrust if not grounded or thrust is positive (trying to jump/fly)
+//	// Integrate acceleration
+//	mVelocity += forwardVector * acceleration * inDeltaTime;
+//
+//	// Clamp to max speed
+//	const float maxSpeed = 300.f;
+//	if (mVelocity.Length2D() > maxSpeed)
+//	{
+//		mVelocity.Normalize2D();
+//		mVelocity *= maxSpeed;
+//	}
+//}
 
 void RoboCat::SimulateMovement(float inDeltaTime)
 {
 	//simulate us...
-	AdjustVelocityByThrust(inDeltaTime);
+	//AdjustVelocityByThrust(inDeltaTime);
 	
 	
 	if (!IsOwnedByLocalPlayer())

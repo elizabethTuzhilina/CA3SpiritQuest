@@ -23,6 +23,8 @@ private:
 	float				mTimeLocationBecameOutOfSync;
 	float				mTimeVelocityBecameOutOfSync;
 	std::unique_ptr<string>*				 m_name_display;
+	bool mIsGrounded = false; 
+
 
 	SpriteComponentPtr	mSpriteComponent;
 };
