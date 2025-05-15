@@ -18,3 +18,5 @@ sf::Sprite& PlayerSpriteComponent::GetSprite()
 
 	return m_sprite;
 }
+
+

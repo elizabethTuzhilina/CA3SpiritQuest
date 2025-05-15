@@ -73,6 +73,19 @@ void RenderManager::RemoveComponent(SpriteComponent* inComponent)
 		mComponents.pop_back();
 	}
 }
+
+
+void RenderManager::DrawPlayerTag(const string& inStr, const Vector3& origin, const Vector3& inColor)
+{
+	sf::Text text;
+	text.setString(inStr);
+	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
+	text.setCharacterSize(20);
+	text.setPosition(origin.mX, origin.mY);
+	text.setFont(*FontManager::sInstance->GetFont("smw"));
+	WindowManager::sInstance->draw(text);
+}
+
 //ET
 void RenderManager::AddPlatform(const std::string& textureName, const sf::Vector2f& position)
 {

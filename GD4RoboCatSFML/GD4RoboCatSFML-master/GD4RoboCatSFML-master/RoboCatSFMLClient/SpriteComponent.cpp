@@ -25,6 +25,17 @@ void SpriteComponent::SetTexture(TexturePtr inTexture)
 	
 	m_sprite.setScale(sf::Vector2f(mGameObject->GetScale(), mGameObject->GetScale()));
 }
+
+void SpriteComponent::ShowTag(const string& inStr, const Vector3& origin, const Vector3& inColor)
+{
+	sf::Text text;
+	text.setString(inStr);
+	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
+	text.setCharacterSize(20);
+	text.setPosition(origin.mX, origin.mY);
+	text.setFont(*FontManager::sInstance->GetFont("smw"));
+	WindowManager::sInstance->draw(text);
+}
 	
 //void SpriteComponent::SetAnimationParams(int frameWidth, int frameHeight, int frameCount, float frameTime)
 //{

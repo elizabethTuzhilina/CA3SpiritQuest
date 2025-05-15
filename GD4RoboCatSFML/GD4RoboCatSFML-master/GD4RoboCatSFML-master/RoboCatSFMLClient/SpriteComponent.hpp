@@ -14,6 +14,7 @@ public:
     virtual ~SpriteComponent();
 
     void SetTexture(TexturePtr inTexture);
+    void ShowTag(const string& inStr, const Vector3& origin, const Vector3& inColor);
     virtual sf::Sprite& GetSprite();
 
     //void UpdateAnimation(float deltaTime);
@@ -22,6 +23,7 @@ public:
 protected:
     sf::Sprite m_sprite;
     GameObject* mGameObject;
+    string m_nametag;
 
    // int mFrameWidth = 64;
    // int mFrameHeight = 64;
