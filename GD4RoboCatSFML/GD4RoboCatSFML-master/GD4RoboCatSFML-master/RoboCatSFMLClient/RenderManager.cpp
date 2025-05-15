@@ -81,9 +81,11 @@ void RenderManager::DrawPlayerTag(const string& inStr, const Vector3& origin, co
 	text.setString(inStr);
 	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
 	text.setCharacterSize(20);
-	text.setPosition(origin.mX, origin.mY);
+	text.setPosition(origin.mX, origin.mY); // Set the position of the text
 	text.setFont(*FontManager::sInstance->GetFont("smw"));
 	WindowManager::sInstance->draw(text);
+
+	mNameTags.push_back(text);
 }
 
 //ET
@@ -138,6 +140,10 @@ int RenderManager::GetComponentIndex(SpriteComponent* inComponent) const
 //render the cameras in order
 void RenderManager::RenderComponents()
 {
+	sf::Text text;
+	text = mNameTags.back();
+
+	WindowManager::sInstance->draw(text);
 	//Get the logical viewport so we can pass this to the SpriteComponents when it's draw time
 	for (SpriteComponent* c : mComponents)
 	{	
@@ -214,5 +220,7 @@ void RenderManager::Render()
 	// Present our back buffer to our front buffer
 	//
 	WindowManager::sInstance->display();
+
+	
 
 }

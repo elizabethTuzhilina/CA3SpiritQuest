@@ -13,6 +13,8 @@ bool Client::StaticInit()
 	HUD::StaticInit();
 
 	//Platforms for world cached in Texture Manager
+	const string& m_name_display = StringUtils::GetCommandLineArg(2);
+	RenderManager::sInstance->DrawPlayerTag(m_name_display, Vector3(450.f, 600.f, 400.f), Colors::Red);
 
 	RenderManager::sInstance->AddPlatform("plat2D", sf::Vector2f(0.f, 690.f));     // left
 	RenderManager::sInstance->AddPlatform("plat2G", sf::Vector2f(215.f, 700.f));   // center

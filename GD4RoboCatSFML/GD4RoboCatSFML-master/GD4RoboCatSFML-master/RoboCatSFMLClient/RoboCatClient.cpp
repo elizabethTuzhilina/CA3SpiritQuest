@@ -53,7 +53,9 @@ void RoboCatClient::Update()
 			sf::FloatRect catBounds(newPos.mX - 16.f, newPos.mY - 16.f, 32.f, 32.f);
 
 			//mSpriteComponent->UpdateAnimation(deltaTime);
-
+			const string& m_name_display = StringUtils::GetCommandLineArg(2);
+			RenderManager::sInstance->DrawPlayerTag(m_name_display, newPos, Colors::Red);
+			RenderManager::sInstance->GetPlayerTags();
 
 			bool collided = false;
 

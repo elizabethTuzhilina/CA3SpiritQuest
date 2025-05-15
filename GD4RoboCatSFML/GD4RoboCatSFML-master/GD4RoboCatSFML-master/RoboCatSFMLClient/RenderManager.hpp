@@ -17,6 +17,7 @@ public:
 	void AddPlatform(const std::string& textureName, const sf::Vector2f& position);
 	void DrawPlayerTag(const string& inStr, const Vector3& origin, const Vector3& inColor);
 	const std::vector<sf::FloatRect>& GetPlatformColliders() const { return mPlatformColliders; }
+	const std::vector<sf::Text>& GetPlayerTags() const { return mNameTags; }
 private:
 
 	RenderManager();
@@ -31,6 +32,7 @@ private:
 
 	std::vector<sf::Sprite> mPlatformSprites; // platform sprites
 	std::vector<sf::FloatRect> mPlatformColliders;
+	std::vector<sf::Text> mNameTags;
 	
 
 	float mCloud1Offset = 0.f;
