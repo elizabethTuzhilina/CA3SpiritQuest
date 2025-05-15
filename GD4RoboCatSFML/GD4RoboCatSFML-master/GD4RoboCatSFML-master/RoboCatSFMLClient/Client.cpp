@@ -14,11 +14,54 @@ bool Client::StaticInit()
 	RenderManager::StaticInit();
 	HUD::StaticInit();
 
+	// Load Menu Image 
+	if (!client->mMenuTexture.loadFromFile("../Assets/Media/Textures/SpiritQuestBackground.png"))
+	{
+		std::cerr << "Failed to load menu image!\n";
+	}
+	else
+	{
+		client->mMenuSprite.setTexture(client->mMenuTexture);
+
+		sf::Vector2u windowSize = WindowManager::sInstance->getSize();
+		sf::Vector2u textureSize = client->mMenuTexture.getSize();
+
+		client->mMenuSprite.setScale(
+			float(windowSize.x) / textureSize.x,
+			float(windowSize.y) / textureSize.y
+		);
+		client->mMenuSprite.setPosition(0.f, 0.f);
+	}
+
+	client->mMenuStartTime = Timing::sInstance.GetTimef(); // start now
+
+	// Load intro texture
+	if (!client->mIntroTexture.loadFromFile("../Assets/Media/Textures/Loading.png"))
+	{
+		std::cerr << "Failed to load intro image!\n";
+	}
+	else
+	{
+		client->mIntroSprite.setTexture(client->mIntroTexture);
+
+		sf::Vector2u windowSize = WindowManager::sInstance->getSize();  // ?? Now safe
+		sf::Vector2u textureSize = client->mIntroTexture.getSize();
+
+		client->mIntroSprite.setScale(
+			float(windowSize.x) / textureSize.x,
+			float(windowSize.y) / textureSize.y
+		);
+		client->mIntroSprite.setPosition(0.f, 0.f);
+	}
+
+	client->mIntroStartTime = Timing::sInstance.GetTimef();
+	client->mShowingIntro = true;
+
 	//MUSIC ET
 	if (bgMusic.openFromFile("../Assets/Media/Music/8beats Light/08-8bit08.ogg"))
 	{
 		bgMusic.setLoop(true);
-		bgMusic.setVolume(20); 
+		bgMusic.setVolume(15); 
 		bgMusic.play();
 	}
 	else
@@ -43,6 +86,10 @@ bool Client::StaticInit()
 
 Client::Client()
 {
+	mIntroStartTime = Timing::sInstance.GetTimef();
+	mShowingIntro = true;
+
+	
 	GameObjectRegistry::sInstance->RegisterCreationFunction('RCAT', RoboCatClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('MOUS', MouseClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('YARN', YarnClient::StaticCreate);
@@ -61,6 +108,34 @@ Client::Client()
 
 void Client::DoFrame()
 {
+	float currentTime = Timing::sInstance.GetTimef();
+
+	if (mShowingMenu && currentTime - mMenuStartTime < 3.f)
+	{
+		WindowManager::sInstance->clear();
+		WindowManager::sInstance->draw(mMenuSprite);
+		WindowManager::sInstance->display();
+		return;
+	}
+	else if (mShowingMenu)
+	{
+		mShowingMenu = false;
+		mIntroStartTime = currentTime; // start intro now
+		mShowingIntro = true;
+	}
+
+	if (mShowingIntro && currentTime - mIntroStartTime < 8.f)
+	{
+		WindowManager::sInstance->clear();
+		WindowManager::sInstance->draw(mIntroSprite);
+		WindowManager::sInstance->display();
+		return;
+	}
+	else if (mShowingIntro)
+	{
+		mShowingIntro = false; // done showing intro
+	}
+
 	InputManager::sInstance->Update();
 
 	Engine::DoFrame();
