@@ -1,5 +1,7 @@
 #include "RoboCatClientPCH.hpp"
-
+#include <SFML/Audio.hpp>
+#include <iostream>
+static sf::Music bgMusic;
 bool Client::StaticInit()
 {
 	// Create the Client pointer first because it initializes SDL
@@ -12,9 +14,21 @@ bool Client::StaticInit()
 	RenderManager::StaticInit();
 	HUD::StaticInit();
 
+	//MUSIC ET
+	if (bgMusic.openFromFile("../Assets/Media/Music/8beats Light/08-8bit08.ogg"))
+	{
+		bgMusic.setLoop(true);
+		bgMusic.setVolume(20); 
+		bgMusic.play();
+	}
+	else
+	{
+		std::cerr << "Failed to load background music!\n";
+	}
+
 	//NameTags E.I
 	const string& m_name_display = StringUtils::GetCommandLineArg(2);
-	RenderManager::sInstance->DrawPlayerTag(m_name_display, Vector3(450.f, 600.f, 400.f), Colors::Red);
+	RenderManager::sInstance->DrawPlayerTag(m_name_display, Vector3(450.f, 600.f, 400.f), Colors::LightBlue);
 
 	//Platforms for world cached in Texture Manager
 
@@ -32,7 +46,7 @@ Client::Client()
 	GameObjectRegistry::sInstance->RegisterCreationFunction('RCAT', RoboCatClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('MOUS', MouseClient::StaticCreate);
 	GameObjectRegistry::sInstance->RegisterCreationFunction('YARN', YarnClient::StaticCreate);
-
+	
 	string destination = StringUtils::GetCommandLineArg(1);
 	string name = StringUtils::GetCommandLineArg(2);
 

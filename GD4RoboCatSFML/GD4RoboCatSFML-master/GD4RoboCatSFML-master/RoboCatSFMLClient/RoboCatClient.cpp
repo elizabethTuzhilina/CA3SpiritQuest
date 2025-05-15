@@ -19,7 +19,7 @@ RoboCatClient::RoboCatClient() :
 	Vector3 offset(0.3f,0.3f,0.3f);
 	//mSpriteComponent->ShowTag(name, this->GetLocation(), Colors::Red);
 
-	RenderManager::sInstance->DrawPlayerTag(m_name_display, this->GetLocation()+offset, Colors::Red);
+	RenderManager::sInstance->DrawPlayerTag(m_name_display, this->GetLocation()+offset, Colors::LightBlue);
 
 
 	mSpriteComponent->SetTexture(TextureManager::sInstance->GetTexture("reaper"));

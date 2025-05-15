@@ -80,8 +80,8 @@ void RenderManager::DrawPlayerTag(const string& inStr, const Vector3& origin, co
 	sf::Text text;
 	text.setString(inStr);
 	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
-	text.setCharacterSize(20);
-	text.setPosition(origin.mX, origin.mY); // Set the position of the text
+	text.setCharacterSize(12);
+	text.setPosition(origin.mX-20.F, origin.mY - 40.f); 
 	text.setFont(*FontManager::sInstance->GetFont("smw"));
 	WindowManager::sInstance->draw(text);
 
@@ -246,36 +246,36 @@ void RenderManager::Render()
 		WindowManager::sInstance->draw(platform);
 	}
 
-	// debug red
-#ifdef _DEBUG
-	for (const auto& rect : mPlatformColliders)
-	{
-		sf::RectangleShape debugRect;
-		debugRect.setPosition(rect.left, rect.top);
-		debugRect.setSize({ rect.width, rect.height });
-		debugRect.setFillColor(sf::Color::Transparent);
-		debugRect.setOutlineColor(sf::Color::Red);
-		debugRect.setOutlineThickness(1.f);
-		WindowManager::sInstance->draw(debugRect);
-	}
-	
-	for (const auto& go : World::sInstance->GetGameObjects())
-	{
-		float radius = go->GetCollisionRadius();
-		if (radius <= 0.f)
-			continue;
-
-		sf::CircleShape debugCircle;
-		debugCircle.setRadius(radius);
-		debugCircle.setOrigin(radius, radius);
-		debugCircle.setPosition(go->GetLocation().mX, go->GetLocation().mY);
-		debugCircle.setOutlineColor(sf::Color::Cyan);
-		debugCircle.setOutlineThickness(1.f);
-		debugCircle.setFillColor(sf::Color::Transparent);
-
-		WindowManager::sInstance->draw(debugCircle);  // Assuming you have access to window
-	}
-#endif
+//	// debug red
+//#ifdef _DEBUG
+//	for (const auto& rect : mPlatformColliders)
+//	{
+//		sf::RectangleShape debugRect;
+//		debugRect.setPosition(rect.left, rect.top);
+//		debugRect.setSize({ rect.width, rect.height });
+//		debugRect.setFillColor(sf::Color::Transparent);
+//		debugRect.setOutlineColor(sf::Color::Red);
+//		debugRect.setOutlineThickness(1.f);
+//		WindowManager::sInstance->draw(debugRect);
+//	}
+//	
+//	for (const auto& go : World::sInstance->GetGameObjects())
+//	{
+//		float radius = go->GetCollisionRadius();
+//		if (radius <= 0.f)
+//			continue;
+//
+//		sf::CircleShape debugCircle;
+//		debugCircle.setRadius(radius);
+//		debugCircle.setOrigin(radius, radius);
+//		debugCircle.setPosition(go->GetLocation().mX, go->GetLocation().mY);
+//		debugCircle.setOutlineColor(sf::Color::Cyan);
+//		debugCircle.setOutlineThickness(1.f);
+//		debugCircle.setFillColor(sf::Color::Transparent);
+//
+//		WindowManager::sInstance->draw(debugCircle);  // Assuming you have access to window
+//	}
+//#endif
 	
 
 	RenderManager::sInstance->RenderComponents();
