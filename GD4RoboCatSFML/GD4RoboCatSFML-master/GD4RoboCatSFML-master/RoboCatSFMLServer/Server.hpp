@@ -14,6 +14,7 @@ public:
 	RoboCatPtr	GetCatForPlayer(int inPlayerId);
 	void	SpawnCatForPlayer(int inPlayerId);
 
+	float mNextMouseSpawnTime = 0.f;
 
 private:
 	Server();

@@ -91,6 +91,14 @@ void Server::DoFrame()
 
 	Engine::DoFrame();
 
+	//  Accumulate more ghosts every 30 seconds
+	float now = Timing::sInstance.GetFrameStartTime();
+	if (now >= mNextMouseSpawnTime)
+	{
+		CreateRandomMice(10); // spawn 10 more each cycle
+		mNextMouseSpawnTime = now + 30.f;
+	}
+
 	NetworkManagerServer::sInstance->SendOutgoingPackets();
 
 }
