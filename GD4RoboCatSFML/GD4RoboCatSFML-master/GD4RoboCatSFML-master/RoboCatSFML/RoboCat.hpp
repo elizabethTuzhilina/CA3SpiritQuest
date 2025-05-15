@@ -44,7 +44,7 @@ public:
 
 protected:
 	RoboCat();
-void	AdjustVelocityByThrust(float inDeltaTime);
+//void	AdjustVelocityByThrust(float inDeltaTime);
 
 private:
 
@@ -61,7 +61,7 @@ private:
 	//bounce fraction when hitting various things
 	float				mWallRestitution;
 	float				mCatRestitution;
-
+	bool mIsGrounded = false;
 
 	uint32_t			mPlayerId;
 

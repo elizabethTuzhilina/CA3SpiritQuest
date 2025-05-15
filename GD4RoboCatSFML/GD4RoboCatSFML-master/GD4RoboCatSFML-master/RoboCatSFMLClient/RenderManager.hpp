@@ -15,6 +15,8 @@ public:
 	void RemoveComponent(SpriteComponent* inComponent);
 	int	 GetComponentIndex(SpriteComponent* inComponent) const;
 	void AddPlatform(const std::string& textureName, const sf::Vector2f& position);
+	void InitializeStaticPlatforms();
+
 	const std::vector<sf::FloatRect>& GetPlatformColliders() const { return mPlatformColliders; }
 private:
 
