@@ -47,6 +47,18 @@ void RoboCatClient::Update()
 	if (IsOwnedByLocalPlayer())
 	{
 		const Move* pendingMove = InputManager::sInstance->GetAndClearPendingMove();
+
+
+		//NameTags E.I
+		//float deltaTime = pendingMove->GetDeltaTime();
+		////Vector3 velocity = GetVelocity();
+		//Vector3 newPos = GetLocation() + velocity * deltaTime;
+
+
+		const string& m_name_display = StringUtils::GetCommandLineArg(2);
+		RenderManager::sInstance->DrawPlayerTag(m_name_display, GetLocation(), Colors::Red);
+		RenderManager::sInstance->GetPlayerTags();
+
 		if (pendingMove)
 		{
 			float deltaTime = Timing::sInstance.GetDeltaTime();
@@ -55,9 +67,7 @@ void RoboCatClient::Update()
 
 
 			
-			const string& m_name_display = StringUtils::GetCommandLineArg(2);
-			RenderManager::sInstance->DrawPlayerTag(m_name_display, newPos, Colors::Red);
-			RenderManager::sInstance->GetPlayerTags();
+			
 
 	
 			SimulateMovement(deltaTime);

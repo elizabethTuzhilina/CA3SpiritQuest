@@ -12,7 +12,12 @@ bool Client::StaticInit()
 	RenderManager::StaticInit();
 	HUD::StaticInit();
 
+	//NameTags E.I
+	const string& m_name_display = StringUtils::GetCommandLineArg(2);
+	RenderManager::sInstance->DrawPlayerTag(m_name_display, Vector3(450.f, 600.f, 400.f), Colors::Red);
+
 	//Platforms for world cached in Texture Manager
+
 
 	RenderManager::sInstance->InitializeStaticPlatforms();
 

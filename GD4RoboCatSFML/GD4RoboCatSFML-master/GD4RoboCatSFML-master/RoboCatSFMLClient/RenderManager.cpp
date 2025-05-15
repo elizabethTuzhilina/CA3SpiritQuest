@@ -188,8 +188,8 @@ void RenderManager::RenderComponents()
 {
 	sf::Text text;
 	text = mNameTags.back();
-
 	WindowManager::sInstance->draw(text);
+
 	//Get the logical viewport so we can pass this to the SpriteComponents when it's draw time
 	for (SpriteComponent* c : mComponents)
 	{	
